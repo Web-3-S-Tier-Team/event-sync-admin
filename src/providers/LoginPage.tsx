@@ -3,7 +3,7 @@ import { useLogin, useNotify, Notification } from "react-admin";
 import {
   Box, Card, CardContent, TextField, Button, Typography, Avatar,
 } from "@mui/material";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import EventIcon from "@mui/icons-material/Event";
 
 export const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -20,7 +20,7 @@ export const LoginPage = () => {
       // is never written to any client-side storage.
       await login({ username: email, password });
     } catch {
-      notify("Invalid email or password", { type: "error" });
+      notify("Email ou mot de passe invalide", { type: "error" });
     } finally {
       // Clear the local field state regardless of outcome
       setPassword("");
@@ -35,17 +35,17 @@ export const LoginPage = () => {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "radial-gradient(circle at top, #1e293b, #0f172a)",
+        background: "radial-gradient(circle at top, #332E7C, #15132B)",
       }}
     >
       <Card sx={{ width: 380, borderRadius: 3, p: 1 }}>
         <CardContent>
           <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", mb: 2 }}>
-            <Avatar sx={{ bgcolor: "primary.main", mb: 1 }}>
-              <LockOutlinedIcon />
+            <Avatar sx={{ bgcolor: "primary.main", width: 48, height: 48, mb: 1 }}>
+              <EventIcon />
             </Avatar>
-            <Typography variant="h6" fontWeight={700}>HR Admin</Typography>
-            <Typography variant="body2" color="text.secondary">Sign in to continue</Typography>
+            <Typography variant="h6" fontWeight={700}>Events Admin</Typography>
+            <Typography variant="body2" color="text.secondary">Connectez-vous pour continuer</Typography>
           </Box>
           <Box component="form" onSubmit={handleSubmit} sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <TextField
@@ -58,7 +58,7 @@ export const LoginPage = () => {
               autoComplete="username"
             />
             <TextField
-              label="Password"
+              label="Mot de passe"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -67,7 +67,7 @@ export const LoginPage = () => {
               autoComplete="current-password"
             />
             <Button type="submit" variant="contained" disabled={submitting} fullWidth>
-              {submitting ? "Signing in..." : "Sign in"}
+              {submitting ? "Connexion..." : "Se connecter"}
             </Button>
           </Box>
         </CardContent>

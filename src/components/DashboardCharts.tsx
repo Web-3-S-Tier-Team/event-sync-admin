@@ -13,15 +13,7 @@ import {
 } from "recharts";
 import { useGetList } from "react-admin";
 import { Box, Typography, CircularProgress, Paper } from "@mui/material";
-
-const COLORS = ["#1976d2", "#ed6c02", "#2e7d32", "#9c27b0", "#0288d1", "#d32f2f", "#795548"];
-
-const STATUS_LABELS: Record<string, string> = {
-  upcoming: "À venir",
-  ongoing: "En cours",
-  completed: "Terminé",
-  cancelled: "Annulé",
-};
+import { CATEGORY_TOKENS, CATEGORY_FALLBACK, STATUS_TOKENS, STATUS_FALLBACK } from "../themes/tokens";
 
 export default function DashboardCharts() {
   const { data: events, isPending } = useGetList("events", {
@@ -44,37 +36,44 @@ export default function DashboardCharts() {
   const categoryData = Object.entries(categoryMap).map(([category, count]) => ({
     category,
     count,
+    fill: (CATEGORY_TOKENS[category] ?? CATEGORY_FALLBACK).color,
   }));
 
   // Group by status
   const statusMap: Record<string, number> = {};
   events?.forEach((e) => {
-    const label = STATUS_LABELS[e.status] ?? e.status;
-    statusMap[label] = (statusMap[label] ?? 0) + 1;
+    statusMap[e.status] = (statusMap[e.status] ?? 0) + 1;
   });
-  const statusData = Object.entries(statusMap).map(([name, value]) => ({ name, value }));
+  const statusData = Object.entries(statusMap).map(([status, value]) => {
+    const token = STATUS_TOKENS[status] ?? STATUS_FALLBACK;
+    return { name: token.label, value, fill: token.color };
+  });
 
   return (
     <Box sx={{ display: "flex", gap: 3, flexWrap: "wrap", mt: 2 }}>
       {/* Bar chart by category */}
       <Paper sx={{ p: 3, flex: "1 1 400px", borderRadius: 3 }}>
-        <Typography variant="h6" gutterBottom fontWeight="bold">
+        <Typography variant="h6" gutterBottom fontWeight={700}>
           Événements par catégorie
         </Typography>
         <ResponsiveContainer width="100%" height={250}>
           <BarChart data={categoryData}>
-            <CartesianGrid strokeDasharray="3 3" />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(107,114,136,0.15)" />
             <XAxis dataKey="category" tick={{ fontSize: 12 }} />
             <YAxis allowDecimals={false} />
-            <Tooltip />
-            <Bar dataKey="count" fill="#1976d2" radius={[6, 6, 0, 0]} />
+            <Tooltip cursor={{ fill: "rgba(107,114,136,0.06)" }} />
+            <Bar dataKey="count" radius={[6, 6, 0, 0]}>
+              {categoryData.map((entry, index) => (
+                <Cell key={`bar-cell-${index}`} fill={entry.fill} />
+              ))}
+            </Bar>
           </BarChart>
         </ResponsiveContainer>
       </Paper>
 
       {/* Pie chart by status */}
       <Paper sx={{ p: 3, flex: "1 1 300px", borderRadius: 3 }}>
-        <Typography variant="h6" gutterBottom fontWeight="bold">
+        <Typography variant="h6" gutterBottom fontWeight={700}>
           Statut des événements
         </Typography>
         <ResponsiveContainer width="100%" height={250}>
@@ -87,8 +86,8 @@ export default function DashboardCharts() {
               dataKey="value"
               label={({ name, value }) => `${name}: ${value}`}
             >
-              {statusData.map((_entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              {statusData.map((entry, index) => (
+                <Cell key={`pie-cell-${index}`} fill={entry.fill} />
               ))}
             </Pie>
             <Legend />

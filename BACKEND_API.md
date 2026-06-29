@@ -79,9 +79,10 @@ All resources follow the same convention, consumed by `dataProvider.ts`:
 
 ### Resources used by this app
 
-- `events` — fields: `id, title, description, location, organizer, category, date, capacity, registeredCount, status, image, createdAt, updatedAt`
+- `events` — fields: `id, title, description, location, organizer, category, date, capacity, registeredCount, status, image, ownerId, createdAt, updatedAt`
   - `category` is one of: `Conférence, Concert, Sport, Formation, Networking, Culturel, Autre`
   - `status` is one of: `upcoming, ongoing, completed, cancelled`
+  - `ownerId` references the `users.id` who created the event (used for the "organisateur" role's ownership checks)
 
 ### CORS
 
@@ -102,13 +103,29 @@ The backend must allow:
 
 ## 4. Roles & permissions (frontend expectations)
 
-`authProvider.getPermissions()` returns the `role` claim from the JWT:
+`authProvider.getPermissions()` returns the `role` claim from the JWT.
+Three roles apply to the **Events** module (the only module implemented
+in this pass):
 
-| Role      | Permissions in the UI |
-|-----------|------------------------|
-| `admin`   | Full CRUD on events, can edit/delete |
-| `manager` | Read events, can edit, cannot delete |
-| `user`    | Read-only access to lists and show views |
+| Action                        | admin | organisateur              | user |
+|--------------------------------|:-----:|:--------------------------:|:----:|
+| Voir la liste / la fiche       |  ✅   | ✅                          | ✅   |
+| Créer un événement             |  ✅   | ✅ (devient `ownerId`)      | ❌   |
+| Modifier un événement          |  ✅ (tous) | ✅ (les siens seulement) | ❌   |
+| Supprimer un événement         |  ✅ (tous) | ✅ (les siens seulement) | ❌   |
+| Accéder à "Découvrir" (import Ticketmaster) | ✅ | ✅ | ❌ |
+| S'inscrire à un événement       |  ❌   | ❌                          | ✅ (bouton sur la fiche, incrémente `registeredCount`) |
+
+Ownership is tracked via `events.ownerId`, set automatically to the
+creator's `identity.id` on creation and checked client-side before
+allowing edit/delete. **Note:** this is a UI-level guard only — a
+production backend must re-check the same rule server-side, since
+nothing stops a user from calling the API directly.
+
+Not implemented in this pass (flagged for a future iteration if needed):
+a dedicated Users-management screen, a Participants/registrations module
+with per-user tracking, revenue statistics, and Categories/Lieux/Settings
+screens.
 
 The frontend hides/disables actions based on this role; the backend **must
 also enforce** these rules server-side (the frontend check is UX only, not

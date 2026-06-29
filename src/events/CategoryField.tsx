@@ -1,25 +1,26 @@
 import { Chip } from "@mui/material";
 import { useRecordContext } from "react-admin";
-import { STATUS_TOKENS, STATUS_FALLBACK } from "../themes/tokens";
+import { CATEGORY_TOKENS, CATEGORY_FALLBACK } from "../themes/tokens";
 
-interface StatusFieldProps {
+interface CategoryFieldProps {
   label?: string;
 }
 
-export const StatusField = (_props: StatusFieldProps) => {
+export const CategoryField = (_props: CategoryFieldProps) => {
   const record = useRecordContext();
   if (!record) return null;
 
-  const token = STATUS_TOKENS[record.status] ?? STATUS_FALLBACK;
+  const token = CATEGORY_TOKENS[record.category] ?? CATEGORY_FALLBACK;
   const Icon = token.icon;
 
   return (
     <Chip
       icon={<Icon style={{ color: "inherit" }} />}
-      label={token.label}
+      label={record.category}
       size="small"
+      variant="outlined"
       sx={{
-        bgcolor: `${token.color}1a`,
+        borderColor: token.color,
         color: token.color,
         fontWeight: 600,
         "& .MuiChip-icon": { color: token.color },
@@ -28,6 +29,6 @@ export const StatusField = (_props: StatusFieldProps) => {
   );
 };
 
-StatusField.defaultProps = {
-  label: "Statut",
+CategoryField.defaultProps = {
+  label: "Catégorie",
 };

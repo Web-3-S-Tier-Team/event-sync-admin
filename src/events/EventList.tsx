@@ -2,17 +2,24 @@ import {
   List,
   Datagrid,
   TextField,
-  NumberField,
   DateField,
-  EditButton,
-  DeleteButton,
+  FunctionField,
   SearchInput,
   SelectInput,
   usePermissions,
+  TopToolbar,
+  FilterButton,
+  CreateButton,
+  ExportButton,
 } from "react-admin";
+import { Avatar } from "@mui/material";
 import { exporter } from "../components/CsvExporter";
 import { CapacityField } from "./CapacityField";
 import { StatusField } from "./StatusField";
+import { CategoryField } from "./CategoryField";
+import { EventRowActions } from "./EventRowActions";
+import { resolveEventImage } from "../utils/eventImage";
+import { canCreateEvent } from "../utils/permissions";
 
 export const CATEGORIES = [
   { id: "Conférence", name: "Conférence" },
@@ -49,23 +56,39 @@ const eventFilters = [
   />,
 ];
 
-export const EventList = () => {
+const EventListActions = () => {
   const { permissions } = usePermissions();
-  const isAdmin = permissions === "admin";
-
   return (
-    <List filters={eventFilters} perPage={10} exporter={exporter} sort={{ field: "date", order: "ASC" }}>
-      <Datagrid rowClick="show">
-        <TextField source="title" label="Titre" />
-        <TextField source="category" label="Catégorie" />
-        <TextField source="location" label="Lieu" />
-        <DateField source="date" label="Date" showTime />
-        <NumberField source="capacity" label="Capacité" />
-        <CapacityField label="Remplissage" />
-        <StatusField label="Statut" />
-        {(permissions === "admin" || permissions === "manager") && <EditButton />}
-        {isAdmin && <DeleteButton />}
-      </Datagrid>
-    </List>
+    <TopToolbar>
+      <FilterButton />
+      {canCreateEvent(permissions) && <CreateButton />}
+      <ExportButton />
+    </TopToolbar>
   );
 };
+
+export const EventList = () => (
+  <List
+    filters={eventFilters}
+    perPage={10}
+    exporter={exporter}
+    sort={{ field: "date", order: "ASC" }}
+    actions={<EventListActions />}
+  >
+    <Datagrid rowClick="show">
+      <FunctionField
+        label=""
+        render={(record: any) => (
+          <Avatar variant="rounded" src={resolveEventImage(record)} sx={{ width: 44, height: 44 }} />
+        )}
+      />
+      <TextField source="title" label="Titre" />
+      <CategoryField label="Catégorie" />
+      <TextField source="location" label="Lieu" />
+      <DateField source="date" label="Date" showTime />
+      <CapacityField label="Remplissage" />
+      <StatusField label="Statut" />
+      <EventRowActions />
+    </Datagrid>
+  </List>
+);

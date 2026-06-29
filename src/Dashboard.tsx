@@ -1,10 +1,12 @@
-import { Typography, Grid, Divider } from "@mui/material";
+import { Typography, Grid, Divider, Box } from "@mui/material";
 import EventIcon from "@mui/icons-material/Event";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import EventBusyIcon from "@mui/icons-material/EventBusy";
 import GroupsIcon from "@mui/icons-material/Groups";
 import PeopleIcon from "@mui/icons-material/People";
 import PercentIcon from "@mui/icons-material/Percent";
+import InsightsIcon from "@mui/icons-material/Insights";
+import SpaceDashboardIcon from "@mui/icons-material/SpaceDashboard";
 import { DashboardCard } from "./components/DashboardCard";
 import DashboardCharts from "./components/DashboardCharts";
 import { useDashboardStats } from "./hooks/useDashboardStats";
@@ -67,9 +69,12 @@ export const Dashboard = () => {
 
   return (
     <div style={{ padding: 24 }}>
-      <Typography variant="h4" gutterBottom fontWeight="bold" sx={{ mb: 3 }}>
-        📊 Tableau de bord des événements
-      </Typography>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 3 }}>
+        <SpaceDashboardIcon sx={{ fontSize: 32, color: "primary.main" }} />
+        <Typography variant="h4" fontWeight={800}>
+          Tableau de bord des événements
+        </Typography>
+      </Box>
 
       <Grid container spacing={3}>
         {kpis.map((kpi) => (
@@ -81,9 +86,12 @@ export const Dashboard = () => {
 
       <Divider sx={{ my: 4 }} />
 
-      <Typography variant="h5" fontWeight="bold" gutterBottom>
-        📈 Graphiques
-      </Typography>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 1 }}>
+        <InsightsIcon sx={{ fontSize: 26, color: "primary.main" }} />
+        <Typography variant="h5" fontWeight={700}>
+          Graphiques
+        </Typography>
+      </Box>
       <DashboardCharts />
     </div>
   );

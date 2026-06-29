@@ -1,10 +1,12 @@
 import { Admin, Resource } from "react-admin";
 import EventIcon from "@mui/icons-material/Event";
+import TravelExploreIcon from "@mui/icons-material/TravelExplore";
 
 import { EventList } from "./events/EventList";
 import { EventCreate } from "./events/EventCreate";
 import { EventEdit } from "./events/EventEdit";
 import { EventShow } from "./events/EventShow";
+import { DiscoveryList } from "./discovery/DiscoveryList";
 
 import { Dashboard } from "./Dashboard";
 import { Layout } from "./Layout";
@@ -26,6 +28,12 @@ function App() {
       darkTheme={darkTheme}
       requireAuth
     >
+      <Resource
+        name="discovery"
+        list={DiscoveryList}
+        icon={TravelExploreIcon}
+        options={{ label: "Découvrir" }}
+      />
       <Resource
         name="events"
         list={EventList}

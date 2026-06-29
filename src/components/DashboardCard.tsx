@@ -20,40 +20,40 @@ export const DashboardCard = ({
 }: DashboardCardProps) => (
   <Card
     sx={{
-      border: `2px solid ${color}`,
       borderRadius: 3,
-      transition: "transform 0.2s, box-shadow 0.2s",
+      borderLeft: `4px solid ${color}`,
+      transition: "transform 0.18s ease, box-shadow 0.18s ease",
       "&:hover": {
-        transform: "translateY(-4px)",
-        boxShadow: `0 8px 24px ${color}33`,
+        transform: "translateY(-3px)",
+        boxShadow: `0 10px 28px ${color}2e`,
       },
     }}
   >
-    <CardContent sx={{ display: "flex", alignItems: "center", gap: 2, p: 3 }}>
+    <CardContent sx={{ display: "flex", alignItems: "center", gap: 2, p: 2.5 }}>
       <Box
         sx={{
-          color: "white",
-          bgcolor: color,
-          borderRadius: "50%",
-          width: 56,
-          height: 56,
+          color,
+          bgcolor: `${color}17`,
+          borderRadius: 2.5,
+          width: 52,
+          height: 52,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           flexShrink: 0,
-          "& svg": { fontSize: 28 },
+          "& svg": { fontSize: 26 },
         }}
       >
         {icon}
       </Box>
-      <Box>
-        <Typography variant="body2" color="text.secondary" fontWeight={500}>
+      <Box sx={{ minWidth: 0 }}>
+        <Typography variant="body2" color="text.secondary" fontWeight={600}>
           {title}
         </Typography>
         {isPending ? (
-          <CircularProgress size={28} sx={{ color }} />
+          <CircularProgress size={24} sx={{ color, mt: 0.5 }} />
         ) : (
-          <Typography variant="h4" fontWeight="bold" color={color} lineHeight={1.2}>
+          <Typography variant="h4" fontWeight={800} color="text.primary" lineHeight={1.2}>
             {value ?? 0}
           </Typography>
         )}

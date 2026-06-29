@@ -8,8 +8,9 @@ import type { AuthProvider } from "react-admin";
  * → retourne le tableau des utilisateurs correspondants.
  *
  * Comptes (définis dans db.json) :
- *   admin@company.com / admin123  → rôle "admin"
- *   user@company.com  / user123   → rôle "user"
+ *   admin@company.com        / admin123        → rôle "admin"        (tous droits)
+ *   organisateur@company.com / organisateur123  → rôle "organisateur" (crée/gère ses événements)
+ *   user@company.com         / user123          → rôle "user"         (consultation + inscription)
  */
 
 const JSON_SERVER_URL =

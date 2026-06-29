@@ -10,9 +10,13 @@ import {
   required,
   minValue,
   useRecordContext,
+  usePermissions,
+  useGetIdentity,
 } from "react-admin";
 import { validateTitle, validateCapacity } from "../utils/validators";
 import { CATEGORIES, STATUSES } from "./EventList";
+import { canManageEvent } from "../utils/permissions";
+import { AccessDenied } from "../components/AccessDenied";
 
 const EventTitle = () => {
   const record = useRecordContext();
@@ -20,8 +24,16 @@ const EventTitle = () => {
   return <span>Modifier : {record.title}</span>;
 };
 
-export const EventEdit = () => (
-  <Edit title={<EventTitle />}>
+const EventEditForm = () => {
+  const record = useRecordContext();
+  const { permissions } = usePermissions();
+  const { identity } = useGetIdentity();
+
+  if (record && !canManageEvent(permissions, record, identity?.id)) {
+    return <AccessDenied />;
+  }
+
+  return (
     <SimpleForm>
       <ImageInput source="image" label="Affiche de l'événement" accept={{ "image/*": [] }}>
         <ImageField source="src" title="title" />
@@ -41,5 +53,11 @@ export const EventEdit = () => (
 
       <SelectInput source="status" label="Statut" validate={required()} choices={STATUSES} />
     </SimpleForm>
+  );
+};
+
+export const EventEdit = () => (
+  <Edit title={<EventTitle />}>
+    <EventEditForm />
   </Edit>
 );
